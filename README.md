@@ -296,3 +296,42 @@ if price  == 699  set segment flagship
 ```
 
 Rules are evaluated top-to-bottom; the first matching rule wins. Rows that match no rule get `unclassified`.
+
+---
+
+## Versioning
+
+This project uses [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`).
+
+The current version is stored in the [`VERSION`](./VERSION) file at the repo root and is compiled into the binary:
+
+```bash
+./src/03_csv_enricher/csv_enricher --version
+# csv_enricher version 1.0.0
+```
+
+| Version bump | When | Example |
+|---|---|---|
+| `PATCH` (1.0.**x**) | Bug fixes, performance | Fix edge case in quoted CSV |
+| `MINOR` (1.**x**.0) | New features, new operators | Add `contains` operator |
+| `MAJOR` (**x**.0.0) | Breaking config/grammar changes | Change rule syntax |
+
+See [CHANGELOG.md](./CHANGELOG.md) for full release history.
+
+### How to update the version
+
+```bash
+# 1. Edit VERSION file
+echo "1.1.0" > VERSION
+
+# 2. Update CHANGELOG.md with what changed
+
+# 3. Rebuild (version is baked in at compile time)
+make clean && make
+
+# 4. Commit, tag, and push
+git add VERSION CHANGELOG.md
+git commit -m "release: v1.1.0 — <short description>"
+git tag -a v1.1.0 -m "Release v1.1.0"
+git push origin main --tags
+```

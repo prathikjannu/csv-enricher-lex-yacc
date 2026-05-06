@@ -118,7 +118,16 @@ void csv_flush_row(int is_header) {
 }
 
 int main(int argc, char *argv[]) {
+#ifndef VERSION
+#define VERSION "unknown"
+#endif
+    if (argc == 2 && (strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "-v") == 0)) {
+        printf("csv_enricher version %s\n", VERSION);
+        return 0;
+    }
+
     if (argc < 3) {
+        fprintf(stderr, "csv_enricher version %s\n", VERSION);
         fprintf(stderr, "Usage: %s <config.conf> <input.csv>\n", argv[0]);
         fprintf(stderr, "  config.conf  rules like: if price > 500 set tier p1\n");
         fprintf(stderr, "  input.csv    CSV file (any size — streamed row by row)\n");

@@ -1,7 +1,9 @@
-CC     = gcc
-FLEX   = flex
-BISON  = bison
-TARGET = csv_enricher
+CC      = gcc
+FLEX    = flex
+BISON   = bison
+TARGET  = csv_enricher
+VERSION = $(shell cat ../../VERSION)
+CFLAGS  = -DVERSION=\"$(VERSION)\"
 
 all: $(TARGET)
 
@@ -21,7 +23,7 @@ conf_lex.c: conf.l conf.tab.h
 
 # ── Link everything together ──────────────────────────────────────────────────
 $(TARGET): csv_lex.c csv.tab.c conf_lex.c conf.tab.c main.c
-	$(CC) -o $@ $^ -I.
+	$(CC) $(CFLAGS) -o $@ $^ -I.
 
 clean:
 	rm -f $(TARGET) \
