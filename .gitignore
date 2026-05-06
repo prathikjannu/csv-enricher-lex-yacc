@@ -1,0 +1,18 @@
+# Build artifacts
+src/01_csv_parser/csv_parser
+src/01_csv_parser/*.tab.c
+src/01_csv_parser/*.tab.h
+src/01_csv_parser/lex.yy.c
+src/02_config_parser/config_parser
+src/02_config_parser/*.tab.c
+src/02_config_parser/*.tab.h
+src/02_config_parser/lex.yy.c
+src/03_csv_enricher/csv_enricher
+src/03_csv_enricher/*.tab.c
+src/03_csv_enricher/*.tab.h
+src/03_csv_enricher/lex.*.c
+# Temp test files
+/tmp/
+test_large.csv
+# OS
+.DS_Store
