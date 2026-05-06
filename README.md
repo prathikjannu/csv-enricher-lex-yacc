@@ -101,7 +101,114 @@ make enricher   # Phase 3
 make clean
 ```
 
-Requirements: `flex`, `bison`, `gcc` (all standard on macOS via Xcode CLI tools).
+Requirements: `flex`, `bison`, `gcc` (all standard on macOS/Linux).
+
+---
+
+## Platform Support
+
+### macOS / Linux
+Works out of the box. Install tools if missing:
+```bash
+# macOS
+xcode-select --install          # installs flex, bison, gcc
+
+# Ubuntu / Debian / WSL
+sudo apt install flex bison gcc make -y
+
+# CentOS / RHEL
+sudo yum install flex bison gcc make -y
+```
+
+---
+
+### Windows
+
+The tool runs on **WSL2** (recommended) or **MSYS2** — both free and take about 5 minutes to set up.
+
+#### Option A — WSL2 (Recommended for Windows 10/11)
+
+WSL2 gives you a full Linux environment inside Windows. Your Windows folders (including where the CSV is generated) are automatically accessible at `/mnt/c/`, `/mnt/d/`, etc.
+
+**Step 1 — Install WSL2** (one time, in PowerShell as Administrator):
+```powershell
+wsl --install
+# Restart your PC when prompted
+```
+
+**Step 2 — Install build tools** (in the WSL/Ubuntu terminal):
+```bash
+sudo apt update && sudo apt install flex bison gcc make git -y
+```
+
+**Step 3 — Clone and build**:
+```bash
+git clone https://github.com/prathikjannu/csv-enricher-lex-yacc.git
+cd csv-enricher-lex-yacc
+make
+```
+
+**Step 4 — Point to your Windows CSV folder**:
+
+Your Windows drives are mounted automatically. For example, if your CSV lands in `C:\Data\exports\`:
+```bash
+# Run enricher directly on the Windows folder
+./src/03_csv_enricher/csv_enricher data/sample.conf \
+    /mnt/c/Data/exports/sales.csv > /mnt/c/Data/exports/sales_enriched.csv
+```
+
+**Step 5 — Schedule with Windows Task Scheduler** (instead of cron):
+
+Create a file `run_enricher.bat` on Windows:
+```bat
+@echo off
+wsl bash /home/<your-user>/csv-enricher-lex-yacc/scripts/run_enricher.sh
+```
+
+Then in **Task Scheduler**:
+- Action → New → Program: `C:\path\to\run_enricher.bat`
+- Trigger → New → Daily, repeat every **1 minute**
+
+Or use the cron inside WSL (runs whenever WSL is active):
+```bash
+crontab -e
+# Add:
+* * * * * WATCH_DIR=/mnt/c/Data/exports OUTPUT_DIR=/mnt/c/Data/enriched bash ~/csv-enricher-lex-yacc/scripts/run_enricher.sh
+```
+
+---
+
+#### Option B — MSYS2 (native Windows, no WSL)
+
+**Step 1 — Install MSYS2** from https://www.msys2.org (free download)
+
+**Step 2 — Install tools** (in the MSYS2 UCRT64 terminal):
+```bash
+pacman -S --noconfirm mingw-w64-ucrt-x86_64-gcc flex bison make git
+```
+
+**Step 3 — Clone and build**:
+```bash
+git clone https://github.com/prathikjannu/csv-enricher-lex-yacc.git
+cd csv-enricher-lex-yacc
+make
+```
+
+**Step 4 — Run on Windows paths** (use forward slashes in MSYS2):
+```bash
+./src/03_csv_enricher/csv_enricher data/sample.conf \
+    "C:/Data/exports/sales.csv" > "C:/Data/exports/sales_enriched.csv"
+```
+
+---
+
+#### Windows — CSV folder watch summary
+
+| Your setup | Recommended approach |
+|---|---|
+| CSV generated on Windows, process on same machine | WSL2 + `/mnt/c/` path |
+| CSV generated on Windows, process on Linux server | Share folder via network mount or SFTP |
+| Fully Windows, no WSL | MSYS2 Option B above |
 
 ---
 
